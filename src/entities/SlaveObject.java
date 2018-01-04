@@ -22,9 +22,9 @@ public class SlaveObject implements Serializable {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "OID")
 //    public Long id;
-
-
-    private MasterObject master;
+//
+//
+//    private MasterObject master;
 
     @Column
     private int     slaveId;
