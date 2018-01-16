@@ -8,24 +8,25 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author Sander Fieten (sander at holodeck-b2b.org)
  */
-//@Entity
-//@Table(name = "SLAVES")
-@Embeddable
+@Entity
+@Table(name = "SLAVES")
+//@Embeddable
 public class SlaveObject implements Serializable {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "OID")
-//    public Long id;
-//
-//
-//    private MasterObject master;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "OID")
+    public Long id;
 
     @Column
     private int     slaveId;

@@ -30,12 +30,14 @@ public class JPATester {
         new JPATester().runTest();
     }
 
+    private int LARGE = 1000;
+
     public void runTest() throws InterruptedException {
         final int N = 1000;
         MasterObject[] masters = new MasterObject[N];
         for(int i = 0; i < N; i++) {
             masters[i] = new MasterObject("master_" + i);
-            int S = new Random().nextInt(5);
+            int S = Integer.max(1, new Random().nextInt(5));
             List<SlaveObject> slaves = new ArrayList<>(S);
             for(int j = 0; j < S; j++) {
                 slaves.add(new SlaveObject(j, "slave_" + j, "something"));
@@ -79,8 +81,8 @@ public class JPATester {
         System.out.println("Updated slaves in " + (new Date().getTime() - startTime) + " ms");
 
         MasterObject m = new MasterObject("many_slaves");
-        List<SlaveObject> slaves = new ArrayList<>(1000);
-        for(int j = 0; j < 1000; j++)
+        List<SlaveObject> slaves = new ArrayList<>(LARGE);
+        for(int j = 0; j < LARGE; j++)
             slaves.add(new SlaveObject(j, "upd_slave_" + j, "something_new"));
         m.setSlaves(slaves);
 
@@ -90,9 +92,9 @@ public class JPATester {
         System.out.println("Saved object in " + (new Date().getTime() - startTime) + " ms");
 
         // Now lets replace with a set with one less slave
-        int R = new Random().nextInt(1000);
-        List<SlaveObject> newSlaves = new ArrayList<>(999);
-        for(int j = 0; j < 1000; j++)
+        int R = new Random().nextInt(LARGE);
+        List<SlaveObject> newSlaves = new ArrayList<>(LARGE-1);
+        for(int j = 0; j < LARGE; j++)
             if (j != R)
                 newSlaves.add(new SlaveObject(j, "slave_" + j, "something"));
 
@@ -112,13 +114,13 @@ public class JPATester {
         em = emFactory.createEntityManager();
         em.getTransaction().begin();
         rm = em.find(MasterObject.class, m.oid);
-        rm.getSlaves().add(new SlaveObject(2000, "slave_2000", null));
+        rm.getSlaves().add(new SlaveObject(2*LARGE, "slave_added", null));
         em.persist(rm);
         em.getTransaction().commit();
         em.close();
 
         // Now update the set by removing one slave
-        R = new Random().nextInt(999);
+        R = new Random().nextInt(LARGE-1);
         System.out.println("Removing one slave");
         startTime = new Date().getTime();
         em = emFactory.createEntityManager();
@@ -134,10 +136,7 @@ public class JPATester {
         em.getTransaction().commit();
         em.close();
         System.out.println("Removed slave object in " + (new Date().getTime() - startTime) + " ms");
-
-
     }
-
 
     class MasterSaver {
         void saveMaster(final MasterObject m) {
@@ -169,8 +168,10 @@ public class JPATester {
             EntityManager em = emFactory.createEntityManager();
             em.getTransaction().begin();
             MasterObject lm = em.find(MasterObject.class, m.oid);
-            for(SlaveObject s : lm.getSlaves())
-                s.setAttr("newAttr_" + new Random().nextInt());
+            int R = new Random().nextInt(lm.getSlaves().size());
+            lm.getSlaves().get(R).setAttr("newAttr_" + new Random().nextInt());
+//            for(SlaveObject s : lm.getSlaves())
+//                s.setAttr("newAttr_" + new Random().nextInt());
             em.persist(lm);
             em.getTransaction().commit();
             em.close();

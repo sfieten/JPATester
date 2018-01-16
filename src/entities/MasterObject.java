@@ -6,15 +6,14 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -33,14 +32,13 @@ public class MasterObject implements Serializable {
     @Column
     private String name;
 
-//	@OneToMany(mappedBy = "master", cascade = CascadeType.ALL)
-    @ElementCollection
-    @CollectionTable(name = "SLAVES")
+	@OneToMany(cascade = CascadeType.ALL)
+//    @ElementCollection
+//    @CollectionTable(name = "SLAVES")
 	private List<SlaveObject> slaves;
 
     public void setSlaves(List<SlaveObject> newSlaves) {
-        this.slaves = new ArrayList<>();
-        newSlaves.forEach((s) -> this.slaves.add(s));
+        this.slaves = newSlaves;
     }
 
     public List<SlaveObject> getSlaves() {
