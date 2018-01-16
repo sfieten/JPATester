@@ -78,6 +78,64 @@ public class JPATester {
             updaters[i].join();
         System.out.println("Updated slaves in " + (new Date().getTime() - startTime) + " ms");
 
+        MasterObject m = new MasterObject("many_slaves");
+        List<SlaveObject> slaves = new ArrayList<>(1000);
+        for(int j = 0; j < 1000; j++)
+            slaves.add(new SlaveObject(j, "upd_slave_" + j, "something_new"));
+        m.setSlaves(slaves);
+
+        System.out.println("Saving master with many slaves");
+        startTime = new Date().getTime();
+        new MasterSaver().saveMaster(m);
+        System.out.println("Saved object in " + (new Date().getTime() - startTime) + " ms");
+
+        // Now lets replace with a set with one less slave
+        int R = new Random().nextInt(1000);
+        List<SlaveObject> newSlaves = new ArrayList<>(999);
+        for(int j = 0; j < 1000; j++)
+            if (j != R)
+                newSlaves.add(new SlaveObject(j, "slave_" + j, "something"));
+
+        System.out.println("Replacing set of slaves (-1)");
+        startTime = new Date().getTime();
+        EntityManager em = emFactory.createEntityManager();
+        em.getTransaction().begin();
+        MasterObject rm = em.find(MasterObject.class, m.oid);
+
+        rm.setSlaves(newSlaves);
+        em.persist(rm);
+        em.getTransaction().commit();
+        em.close();
+        System.out.println("Saved object in " + (new Date().getTime() - startTime) + " ms");
+
+        // Add slave object to get to 1000 slaves again
+        em = emFactory.createEntityManager();
+        em.getTransaction().begin();
+        rm = em.find(MasterObject.class, m.oid);
+        rm.getSlaves().add(new SlaveObject(2000, "slave_2000", null));
+        em.persist(rm);
+        em.getTransaction().commit();
+        em.close();
+
+        // Now update the set by removing one slave
+        R = new Random().nextInt(999);
+        System.out.println("Removing one slave");
+        startTime = new Date().getTime();
+        em = emFactory.createEntityManager();
+        em.getTransaction().begin();
+        rm = em.find(MasterObject.class, m.oid);
+        boolean removed = false;
+        for(int j = 0; j < rm.getSlaves().size() && !removed; j++)
+            if (rm.getSlaves().get(j).getId() == R) {
+                rm.getSlaves().remove(j);
+                removed = true;
+            }
+        em.persist(rm);
+        em.getTransaction().commit();
+        em.close();
+        System.out.println("Removed slave object in " + (new Date().getTime() - startTime) + " ms");
+
+
     }
 
 

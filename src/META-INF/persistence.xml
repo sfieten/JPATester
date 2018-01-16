@@ -32,7 +32,7 @@ Since: 3.0.0
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="false"/>
       <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/testjpa?autoReconnect=true"/>
+      <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/testjpa"/>
       <!--  <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver"/>
       <property name="hibernate.connection.url" value="jdbc:derby:target/db/coreDB;create=true"/>-->
       <property name="hibernate.connection.username" value="holodeck"/>
@@ -42,9 +42,7 @@ Since: 3.0.0
       <!--<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
       <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-      <!-- Important   -->
       <property name="hibernate.connection.provider_class" value="org.hibernate.c3p0.internal.C3P0ConnectionProvider"/>
-      <!-- Configuring Connection Pool -->
       <property name="hibernate.c3p0.testConnectionOnCheckin" value="true"/>
       <property name="hibernate.c3p0.idleConnectionTestPeriod" value="300"/>
       <property name="hibernate.c3p0.min_size" value="5"/>
